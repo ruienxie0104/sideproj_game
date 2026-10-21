@@ -4,7 +4,7 @@ export const STORAGE_KEY = 'borrow-space-v3';
 export const LEGACY_KEY = 'borrow-space-v2';
 export function sanitizeProgress(value) {
   const fresh = { current: 0, best: {}, seen: [], choices: {}, adopted: [], activePet: null,
-    home: { palette: 'sage', placements: [] }, audio: { music: false, effects: false, volume: .5 } };
+    careVersion: 1, food: 0, growth: {}, home: { palette: 'sage', placements: [] }, audio: { music: false, effects: false, volume: .5 } };
   if (!value || typeof value !== 'object' || Array.isArray(value)) return fresh;
   fresh.current = Number.isInteger(value.current) ? Math.max(0, Math.min(LEVELS.length - 1, value.current)) : 0;
   fresh.seen = Array.isArray(value.seen) ? [...new Set(value.seen.filter(k => ['wide','tall','cozy'].includes(k)))] : [];
@@ -17,6 +17,13 @@ export function sanitizeProgress(value) {
   fresh.adopted = Object.keys(PETS).filter(id => Array.isArray(value.adopted) && value.adopted.includes(id) && affection(fresh, id) >= ADOPTION_GOAL);
   fresh.activePet = fresh.adopted.includes(value.activePet) ? value.activePet : fresh.adopted[0] || null;
   if (['sage','peach','lavender'].includes(value.home?.palette)) fresh.home.palette = value.home.palette;
+  fresh.food = value.careVersion === 1
+    ? Number.isInteger(value.food) ? Math.max(0, Math.min(99999, value.food)) : 0
+    : Object.values(fresh.best).filter(record => record.stars === 3).length;
+  for (const id of fresh.adopted) {
+    const meals = value.growth?.[id]?.meals;
+    fresh.growth[id] = { meals: Number.isInteger(meals) ? Math.max(0, Math.min(9999, meals)) : 0 };
+  }
   const unlocked = unlockedFurniture(fresh).map(f => f.id);
   if (fresh.adopted.length && Array.isArray(value.home?.placements)) {
     for (const p of value.home.placements) {

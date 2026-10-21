@@ -3,6 +3,7 @@ import { icon, resident, animalArt, roomDecor } from './art.js';
 import { STORAGE_KEY, sanitizeProgress, readProgress, recordWin, totalStars } from './progress.js';
 import { PETS, animalAt, journeyIndex } from './pets.js';
 import { setupJourney } from './journey.js';
+import { createFoodReward } from './care.js';
 import { createAudio } from './audio.js';
 
 const $ = id => document.getElementById(id);
@@ -10,7 +11,7 @@ let progress;
 try { progress = readProgress(localStorage); }
 catch { progress = sanitizeProgress(null); }
 let level = progress.current, state, goals, history = [], moves = 0, usedHint = false;
-let active = null, won = false, lastFrame = 0, winTimer;
+let active = null, won = false, lastFrame = 0, winTimer, foodReward = createFoodReward();
 let lastHappy = [], reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const dialogFocus = new WeakMap();
 const audio = createAudio(progress.audio, () => { $('audioStatus').textContent = '目前無法播放聲音，可再點開關重試。'; });
@@ -64,7 +65,7 @@ function load(index) {
   for (const dialog of document.querySelectorAll('dialog[open]')) dialog.close();
   level = index;
   const entry = LEVELS[level], chapter = CHAPTERS[entry.chapter];
-  state = createState(entry); goals = goalsFor(entry);
+  state = createState(entry); goals = goalsFor(entry); foodReward = createFoodReward();
   moves = 0; history = []; usedHint = false; won = false; lastHappy = [];
   progress.current = level; save();
   document.body.dataset.theme = chapter.theme;
@@ -162,6 +163,8 @@ function finish() {
   won = true; stop(false);
   const entry = LEVELS[level], wasComplete = chapterComplete(progress.best, entry.chapter);
   const earned = awardStars({ moves, par: entry.par, usedHint });
+  const foodEarned = foodReward.claim(progress, earned);
+  $('foodRewardNotice').textContent = foodEarned ? '◡ 三星完成！獲得 1 份飼料，帶回家陪朋友吃飯吧。' : earned < 3 ? '挑戰三星可得 1 份飼料；重玩三星也能獲得。' : '這一局的飼料已領取；重新開始一關可以再挑戰。';
   recordWin(progress, entry.id, earned, moves); save(); updateProgressUI();
   journey.renderSummary(); journey.renderChoice($('winFriends'), entry);
   setMessage('每個願望都完成了！這就是剛剛好的小家。');

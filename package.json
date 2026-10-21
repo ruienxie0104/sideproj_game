@@ -1,6 +1,6 @@
 {
   "name": "borrow-space",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "description": "借空間：以手機單指操作為核心的空間分配解謎原型",
@@ -8,7 +8,7 @@
     "dev": "node scripts/serve.mjs",
     "start": "node scripts/serve.mjs",
     "test": "node --test",
-    "check": "node --check dist/game.js && node --check dist/engine.js && node --check dist/art.js && node --check dist/progress.js && node --check dist/pets.js && node --check dist/journey.js && node --check dist/audio.js && node --check scripts/serve.mjs && node --test"
+    "check": "node --check dist/game.js && node --check dist/engine.js && node --check dist/art.js && node --check dist/progress.js && node --check dist/pets.js && node --check dist/journey.js && node --check dist/audio.js && node --check dist/care.js && node --check dist/roaming.js && node --check dist/room-life.js && node --check scripts/serve.mjs && node --test"
   },
   "engines": {
     "node": ">=20"

@@ -233,3 +233,46 @@ body[data-theme='cloud'] { --roof:#a2a0bc; --sky:#e7e6ef; --accent:#827e9e; back
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 .win-details { margin:12px 0; text-align:left; border-top:1px solid #e8e7d9; border-bottom:1px solid #e8e7d9; }.win-details summary { cursor:pointer; padding:13px 8px; font-size:11px; color:#8a947c; }.win-stars { margin:16px 0 12px; }.win-stars .star { width:34px; height:34px; }.win-stars .star:nth-child(2) { width:46px; height:46px; }
+
+/* A shared living floor: feet determine depth, furniture cells leave walking aisles. */
+.pet-room { container-type:inline-size; }
+.pet-wall { height:51%; }
+.pet-room::after { content:''; position:absolute; top:51%; bottom:0; left:0; right:0; z-index:0; pointer-events:none; background:repeating-linear-gradient(0deg,transparent 0 27px,#bca78825 28px 29px),repeating-linear-gradient(90deg,#e3cfab 0 65px,#e9d7b8 66px 130px); }
+.room-life { position:absolute; top:51%; bottom:0; left:0; right:0; z-index:1; }
+.living-furniture { position:absolute; width:clamp(62px,23cqw,88px); transform:translate(-50%,-100%); pointer-events:none; filter:drop-shadow(0 4px 2px #765d4320); }
+.living-furniture svg { width:100%; }
+.roaming-pet { position:absolute; width:clamp(44px,14cqw,60px); height:auto; aspect-ratio:1; transform:translate(-50%,-100%); border:0; background:none; padding:0; touch-action:manipulation; }
+.actor-body { position:relative; display:block; transform-origin:50% 85%; }
+.actor-body .resident { animation:none; }
+.roaming-pet[data-facing='-1'] .actor-body { scale:-1 1; }
+.actor-name { position:absolute; left:50%; bottom:-9px; transform:translateX(-50%); white-space:nowrap; font-size:9px; padding:2px 5px; color:#60755e; border-radius:8px; background:#fff9e9dd; }
+.roaming-pet[aria-pressed=true] .actor-name { background:#6f8c6c; color:#fff9e9; }
+.roaming-pet[data-mode=walk] .actor-body { animation:little-step .48s ease-in-out infinite; }
+.roaming-pet[data-mode=nap] .actor-body { transform:rotate(-12deg) scale(1,.87); }
+.roaming-pet[data-mode=nap] .pet-eyes { transform:scaleY(.12); transform-origin:50px 51px; }
+.pet-emote { position:absolute; right:0; top:-12px; font-size:17px; color:#bb8385; pointer-events:none; }
+.roaming-pet[data-mode=nap] .pet-emote::after { content:'z z'; color:#8f8eaa; font-size:12px; }
+.roaming-pet[data-mode=pet] .pet-emote::after { content:'♡'; }
+.roaming-pet[data-mode=pet] .actor-body { animation:pet-nuzzle .7s ease-in-out 3; }
+.roaming-pet[data-mode=feed] .pet-emote::after { content:'◡'; background:#efcf95; border-radius:50%; padding:0 4px; }
+.roaming-pet[data-mode=feed] .actor-body { animation:little-step .8s ease-in-out 3; }
+.roaming-pet[data-mode=play] .actor-body { animation:pet-hop .7s ease-in-out 3; }
+.roaming-pet[data-mode=play] .pet-emote::after { content:'●'; color:#dba386; animation:ball-toss .7s ease-in-out 3; display:block; }
+.pet-crown { position:absolute; width:48%; left:26%; top:8%; transform:rotate(-8deg); pointer-events:none; }
+.floor-grid { background:none; z-index:800; pointer-events:none; padding:0; }
+.floor-tile { pointer-events:none; }
+.floor-tile:disabled { visibility:hidden; }
+.editing .floor-tile { pointer-events:auto; background:#fff8dd15; }
+.editing .floor-tile span { pointer-events:none; }
+.pet-bubble { z-index:900; top:34%; left:6%; right:6%; line-height:1.6; }
+.growth-panel { margin-top:18px; border:1px solid #dedfcb; border-radius:17px; padding:15px; background:#fffaf0; }
+.growth-title { display:flex; justify-content:space-between; gap:8px; align-items:center; }.growth-title h3 { font-size:13px; }.growth-title>span { font-size:12px; white-space:nowrap; color:#947952; }
+.growth-meter { height:7px; background:#e9e5d6; border-radius:6px; overflow:hidden; margin:12px 0; }.growth-meter i { display:block; height:100%; background:linear-gradient(90deg,#aebc8b,#83a289); transition:width .4s; }
+.growth-panel p { font-size:12px; color:#6f8266; line-height:1.7; margin:8px 0; }.growth-panel small { display:block; font-size:10px; line-height:1.8; color:#8b917e; }
+.care-actions button { font-size:11px; line-height:1.5; padding:8px 3px; }.food-reward { background:#f4ecd4; padding:12px; border-radius:12px; color:#89744e!important; font-size:12px!important; }
+@keyframes little-step { 50% { transform:translateY(-3px) rotate(3deg); } }
+@keyframes pet-nuzzle { 50% { transform:rotate(-10deg) scale(1.06); } }
+@keyframes ball-toss { 50% { transform:translate(12px,-24px); } }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+
+#petBubble { position:static; margin:12px 0; min-height:40px; padding:10px 12px; font-size:12px; line-height:1.7; }

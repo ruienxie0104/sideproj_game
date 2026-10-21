@@ -1,13 +1,16 @@
 import { LEVELS, CHAPTERS } from './engine.js';
 import { icon, animalArt } from './art.js';
 import { PETS, ADOPTION_GOAL, FURNITURE, residentsFor, affection, pendingChoices, chooseFriend, adopt, unlockedFurniture, placeFurniture, removeFurniture } from './pets.js';
+import { growthOf, feedPet } from './care.js';
+import { createRoomLife } from './room-life.js';
 const $ = id => document.getElementById(id);
 
 export function setupJourney({ progress, save, continueGame, continueIndex, openDialog, stopGame, audio }) {
   let editing = false, selected = 'cushion', removing = false, careTimer;
+  const roomLife = createRoomLife($('roomLife'), id => { progress.activePet = id; save(); renderPetHome(); care('pet'); });
   const friendLabel = id => `${PETS[id].name}・${PETS[id].species}`;
   function showView(name) {
-    stopGame();
+    stopGame(); roomLife.setActive(false);
     document.querySelectorAll('dialog[open]').forEach(d => d.close());
     for (const view of ['home','game','pet']) $(`${view}View`).hidden = view !== name;
     for (const [id, view] of [['navHome','home'],['navJourney','game'],['navPetHome','pet']]) {
@@ -96,7 +99,7 @@ export function setupJourney({ progress, save, continueGame, continueIndex, open
   function renderPetHome() {
     const hasPet = !!progress.activePet;
     $('homeLocked').hidden = hasPet; $('homeUnlocked').hidden = !hasPet;
-    $('petHomeSubtitle').textContent = hasPet ? `${PETS[progress.activePet].name}的小家 · 佈置與陪伴，都照你的步調。` : '替未來的家人，留一點溫柔的空間。';
+    $('petHomeSubtitle').textContent = hasPet ? `${progress.adopted.length} 位家人一起生活 · 點動物，選擇要陪伴的朋友。` : '替未來的家人，留一點溫柔的空間。';
     if (!hasPet) return;
     $('petTabs').replaceChildren();
     progress.adopted.forEach(id => {
@@ -105,22 +108,24 @@ export function setupJourney({ progress, save, continueGame, continueIndex, open
       button.onclick = () => { progress.activePet = id; save(); renderPetHome(); care('pet'); };
       $('petTabs').append(button);
     });
-    $('homePet').innerHTML = animalArt(progress.activePet);
-    $('homePet').setAttribute('aria-label', `摸摸${PETS[progress.activePet].name}`);
+    roomLife.sync(progress, editing);
+    roomLife.setActive(!editing && !$('petView').hidden);
+    renderGrowth();
     $('petRoom').dataset.palette = progress.home.palette;
     $('petRoom').classList.toggle('editing', editing);
     $('editRoom').textContent = editing ? '完成布置 ✓' : '開始布置';
     $('editRoom').setAttribute('aria-pressed', String(editing));
     $('removeItem').hidden = !editing;
     document.querySelectorAll('[data-care]').forEach(button => { button.disabled = editing; });
-    $('homePet').disabled = editing;
+    $('feedButton').disabled = editing || progress.food < 1 || growthOf(progress,progress.activePet).meals >= 9999;
+    $('playButton').disabled = editing || growthOf(progress,progress.activePet).index < 1;
     $('removeItem').setAttribute('aria-pressed', String(removing));
     $('decorHint').textContent = !editing ? '家具與配色會自動儲存。先點「開始布置」試試。' : removing ? '點地板上的家具，就能收回架上。' : `已選：${FURNITURE.find(f => f.id === selected)?.name || '柔軟坐墊'}。點一格擺放；同一件可換位置。`;
     $('floorGrid').replaceChildren();
     for (let slot = 0; slot < 9; slot++) {
       const placement = progress.home.placements.find(p => p.slot === slot), item = placement && FURNITURE.find(f => f.id === placement.id);
       const tile = document.createElement('button'); tile.className = 'floor-tile'; tile.disabled = !editing;
-      tile.innerHTML = item ? icon(item.icon) : '<span>＋</span>';
+      tile.innerHTML = item ? '<span>✓</span>' : '<span>＋</span>';
       tile.setAttribute('aria-label', `第 ${Math.floor(slot / 3) + 1} 列第 ${slot % 3 + 1} 格，${item ? item.name : '空位'}${editing ? removing ? '，點擊收回' : '，點擊擺放' : ''}`);
       tile.onclick = () => { if (removing) removeFurniture(progress, slot); else placeFurniture(progress, selected, slot); save(); renderPetHome(); audio.effect([523]); };
       $('floorGrid').append(tile);
@@ -130,20 +135,37 @@ export function setupJourney({ progress, save, continueGame, continueIndex, open
     FURNITURE.forEach(item => {
       const available = unlocked.some(f => f.id === item.id), button = document.createElement('button');
       button.className = 'shelf-item'; button.disabled = !available;
-      button.innerHTML = `${icon(item.icon)}<span>${item.name}</span><small>${available ? progress.home.placements.some(p => p.id === item.id) ? '已擺放 · 可移動' : '可以擺放' : `完成${CHAPTERS[item.chapter].name}`}</small>`;
+      button.innerHTML = `${icon(item.icon)}<span>${item.name}</span><small>${available ? progress.home.placements.some(p => p.id === item.id) ? '已擺放 · 可移動' : '可以擺放' : item.meals ? `任一寵物餵食 ${item.meals} 次` : `完成${CHAPTERS[item.chapter].name}`}</small>`;
       button.setAttribute('aria-pressed', String(editing && !removing && selected === item.id));
       button.onclick = () => { selected = item.id; removing = false; editing = true; renderPetHome(); };
       $('furnitureShelf').append(button);
     });
     document.querySelectorAll('[data-palette]').forEach(button => { if (button.tagName === 'BUTTON') button.setAttribute('aria-pressed', String(button.dataset.palette === progress.home.palette)); });
   }
+  function renderGrowth() {
+    const pet = progress.activePet, g = growthOf(progress,pet);
+    const fraction = Math.min(1, g.meals / 9);
+    $('growthPanel').innerHTML = `<div class="growth-title"><h3>${PETS[pet].name} · ${g.stage.name}</h3><span>◡ 飼料 <b>${progress.food}</b></span></div><div class="growth-meter" role="progressbar" aria-label="${PETS[pet].name}的成長" aria-valuemin="0" aria-valuemax="9" aria-valuenow="${Math.min(g.meals,9)}"><i style="width:${fraction*100}%"></i></div><p>${g.next ? `再餵食 ${g.next.meals-g.meals} 次：${g.next.unlock}` : '已解鎖所有成長回饋，小花冠是你們的紀念。'}</p><small>一起用餐 ${g.meals} 次 · 三星通關得 1 份飼料，重玩也可取得。</small>${progress.food === 0 ? '<button id="earnFood" class="secondary">去挑戰三星，帶飼料回家 →</button>' : ''}`;
+    $('feedButton').textContent = g.next ? '◡ 餵食 · 1 份' : '◡ 一起用餐 · 1 份';
+    $('playButton').textContent = g.index < 1 ? '接球 · 餵食 2 次解鎖' : '✧ 接球';
+    if ($('earnFood')) $('earnFood').onclick = continueGame;
+  }
   function care(action) {
     if (!progress.activePet || editing) return;
-    const name = PETS[progress.activePet].name;
-    $('petBubble').textContent = { pet: `${name}靠過來蹭蹭你的手。♡`, feed: `${name}吃了一口點心，心滿意足。`, play: `${name}跳起來接住了小球！` }[action];
-    $('petRoom').dataset.care = action; clearTimeout(careTimer);
+    const pet = progress.activePet, name = PETS[pet].name;
+    let text;
+    if (action === 'feed') {
+      const result = feedPet(progress,pet);
+      if (!result) { $('petBubble').textContent = '先完成一關三星，帶一份飼料回家吧。'; return; }
+      save(); renderPetHome(); renderSummary();
+      text = result.leveledUp ? `${name}成長了！解鎖：${result.stage.unlock}。` : `${name}吃得很開心，一起用餐 ${result.meals} 次了。`;
+    } else if (action === 'play') {
+      if (growthOf(progress,pet).index < 1) return;
+      text = `${name}跳起來接住小球，再開心地送回給你！`;
+    } else text = `${name}靠過來蹭蹭你的手。♡`;
+    $('petBubble').textContent = text; roomLife.react(pet,action); clearTimeout(careTimer);
     audio.effect(action === 'play' ? [523,784,659] : [523,659]);
-    careTimer = setTimeout(() => { delete $('petRoom').dataset.care; $('petBubble').textContent = '今天，也很高興見到你。'; }, 2800);
+    careTimer = setTimeout(() => { $('petBubble').textContent = '今天，也很高興見到你。'; }, 4200);
   }
   function syncAudioUI() {
     $('musicToggle').checked = progress.audio.music; $('effectsToggle').checked = progress.audio.effects;
@@ -158,7 +180,6 @@ export function setupJourney({ progress, save, continueGame, continueIndex, open
   $('navFriends').onclick = $('homeFriends').onclick = $('meetFriends').onclick = showFriends;
   $('navPetHome').onclick = $('homeDecor').onclick = showPetHome;
   $('pendingFriends').onclick = $('albumInbox').onclick = $('nextPending').onclick = showPending;
-  $('homePet').onclick = () => care('pet');
   document.querySelectorAll('[data-care]').forEach(button => { button.onclick = () => care(button.dataset.care); });
   $('editRoom').onclick = () => { editing = !editing; removing = false; renderPetHome(); };
   $('removeItem').onclick = () => { removing = !removing; renderPetHome(); };

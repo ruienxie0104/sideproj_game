@@ -30,9 +30,12 @@ export function adopt(progress, pet) {
 }
 export const FURNITURE = [
   { id: 'cushion', name: '柔軟坐墊', icon: 'cushion', chapter: -1 },
-  ...CHAPTERS.map((c, chapter) => ({ id: `gift-${chapter}`, name: c.reward, icon: c.rewardIcon, chapter }))
+  ...CHAPTERS.map((c, chapter) => ({ id: `gift-${chapter}`, name: c.reward, icon: c.rewardIcon, chapter })),
+  { id: 'growth-ball', name: '彩虹玩具球', icon: 'ball', meals: 2 },
+  { id: 'growth-flowers', name: '安心小花籃', icon: 'flowers', meals: 5 },
+  { id: 'growth-photo', name: '我們的合照', icon: 'photo', meals: 9 }
 ];
-export function unlockedFurniture(progress) { return FURNITURE.filter(f => f.chapter < 0 || chapterComplete(progress.best, f.chapter)); }
+export function unlockedFurniture(progress) { return FURNITURE.filter(f => f.meals ? progress.adopted.some(id => (progress.growth?.[id]?.meals || 0) >= f.meals) : f.chapter < 0 || chapterComplete(progress.best, f.chapter)); }
 export function placeFurniture(progress, id, slot) {
   if (!progress.adopted.length || !Number.isInteger(slot) || slot < 0 || slot > 8 || !unlockedFurniture(progress).some(f => f.id === id)) return false;
   // One copy per gift. Moving onto an occupied tile returns that item to the shelf.
