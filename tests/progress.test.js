@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { sanitizeProgress, recordWin, totalStars, STORAGE_KEY } from '../dist/progress.js';
 import { LEVELS } from '../dist/engine.js';
 
-test('v2 has a separate storage key so the original playtest records remain intact', () => {
+test('v3 has a separate storage key so the original playtest records remain intact', () => {
   assert.notEqual(STORAGE_KEY, 'borrow-space-v1');
 });
 
@@ -18,7 +18,9 @@ test('corrupt or unknown progress cannot inject levels or invalid scores', () =>
   assert.deepEqual(p.seen, ['wide']);
   assert.equal(Object.keys(p.best).length, 1);
   assert.equal(totalStars(p), 3);
-  assert.deepEqual(sanitizeProgress(null), { current: 0, best: {}, seen: [] });
+  assert.equal(sanitizeProgress(null).current, 0);
+  assert.deepEqual(sanitizeProgress(null).best, {});
+  assert.deepEqual(sanitizeProgress(null).adopted, []);
 });
 
 test('a replay preserves earned stars and records a better move count independently', () => {

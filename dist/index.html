@@ -3,13 +3,34 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#efece1"><meta name="description" content="借一點空間，完成不同住戶的小願望。手機單指解謎：寬沙發、高植物、剛剛好的貓窩。">
-  <title>借空間 · 鄰居的小願望</title><link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css">
+  <title>借空間 · 把日子住成喜歡的樣子</title><link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css">
 </head>
 <body data-theme="sunny">
   <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
   <main class="app">
-    <header><div class="brand"><span class="brand-mark">▧</span><div><h1>借空間</h1><span>鄰居的小願望</span></div></div><div class="header-actions"><button id="helpButton" class="icon-button" aria-label="玩法說明">?</button><button id="sound" class="icon-button" aria-label="開啟音效" aria-pressed="false">♪</button></div></header>
-    <nav class="journey" aria-label="遊戲進度"><button id="mapButton"><span data-icon="map"></span><span>街區地圖</span></button><span class="star-total"><span data-icon="star"></span><b id="totalStars">0</b><small>/ 36</small></span><button id="collectionButton"><span data-icon="gift"></span><span id="collectionCount">收藏 0/3</span></button></nav>
+    <header><div class="brand"><span class="brand-mark">▧</span><div><h1>借空間</h1><span>和你，慢慢成為一家人</span></div></div><div class="header-actions"><button id="helpButton" class="icon-button" aria-label="玩法說明">?</button><button id="sound" class="icon-button" aria-label="音樂與音效設定">♪</button></div></header>
+    <section id="homeView" class="view" aria-label="首頁">
+      <div class="home-intro"><span class="eyebrow">A LITTLE SPACE, A LOT OF LOVE</span><h2>借一點空間，<br>住進彼此的生活。</h2><p>每個小願望，都是成為家人的開始。</p></div>
+      <div class="hero-scene" aria-hidden="true"><div class="scene-sun"></div><div class="scene-cloud cloud-one"></div><div class="scene-cloud cloud-two"></div><div class="scene-hill"></div><div class="scene-house"><div class="scene-roof"></div><div class="scene-windows"><i></i><i></i></div><div class="scene-door"></div><span class="house-sign">little wishes</span></div><div id="heroAnimals" class="hero-animals"></div><div class="scene-flowers">✿ · ✿ · ✿</div></div>
+      <div class="home-story"><span class="story-dot"></span><p id="homeStory">有些緣分，從隔壁的一聲你好開始。</p></div>
+      <button id="continueJourney" class="primary continue-card"><span><small id="continueChapter"></small><b id="continueTitle">開始今天的小旅程</b></span><span aria-hidden="true">→</span></button>
+      <div class="home-stats"><span><b id="completedCount">0</b> / 24 個小家</span><span><b id="adoptedCount">0</b> / 4 位家人</span><span><b id="furnitureCount">1</b> 件家具</span></div>
+      <button id="pendingFriends" class="inbox-card" hidden></button>
+      <div class="home-links"><button id="homeFriends"><span data-icon="heart"></span><b>動物手帳</b><small>一點好感，一點靠近</small></button><button id="homeDecor"><span data-icon="home"></span><b>我們的小家</b><small>布置喜歡的每個角落</small></button></div>
+      <button id="homeMusic" class="music-invite">♪ 開啟輕音樂，坐一會兒</button>
+    </section>
+    <section id="petView" class="view" aria-label="我們的小家" hidden>
+      <div class="home-intro"><span class="eyebrow">OUR EVERYDAY LITTLE HAPPINESS</span><h2>把日子住成<br>喜歡的樣子。</h2><p id="petHomeSubtitle"></p></div>
+      <div id="homeLocked" class="empty-home"><span data-icon="home"></span><h3>小家正在等第一位家人</h3><p>通關後選擇喜歡的動物，<br>同一位累積 5 次好感，就能邀牠回家。</p><button id="meetFriends" class="primary">看看動物手帳 →</button></div>
+      <div id="homeUnlocked" hidden>
+        <div id="petTabs" class="pet-tabs" aria-label="選擇陪伴的寵物"></div>
+        <div id="petRoom" class="pet-room" data-palette="sage"><div class="pet-wall"><div class="pet-window"><i></i></div><span class="wall-print">home<br>sweet home</span><div class="hanging-leaf"></div></div><div id="floorGrid" class="floor-grid" role="group" aria-label="家具擺放位置，三列三欄"></div><button id="homePet" class="home-pet" aria-label="摸摸寵物"></button><div id="petBubble" class="pet-bubble" role="status">今天，也很高興見到你。</div></div>
+        <div class="care-actions"><button data-care="pet">♡ 摸摸</button><button data-care="feed">◡ 點心</button><button data-care="play">✧ 玩耍</button></div>
+        <div class="decor-panel"><div class="decor-heading"><h3>佈置小家</h3><button id="editRoom" aria-pressed="false">開始布置</button></div><p id="decorHint" role="status">點「開始布置」，再選家具和地板位置。</p><div id="furnitureShelf" class="furniture-shelf"></div><div class="palette-row"><span>牆面配色</span><button data-palette="sage" aria-label="鼠尾草綠" style="--swatch:#b8c6ae"></button><button data-palette="peach" aria-label="奶油蜜桃" style="--swatch:#e4c1aa"></button><button data-palette="lavender" aria-label="暮光紫" style="--swatch:#c2bfd8"></button></div><button id="removeItem" class="secondary" aria-pressed="false">收回家具</button></div>
+      </div>
+    </section>
+    <section id="gameView" class="view" hidden>
+    <nav class="journey" aria-label="遊戲進度"><button id="mapButton"><span data-icon="map"></span><span>街區地圖</span></button><span class="star-total"><span data-icon="star"></span><b id="totalStars">0</b><small>/ 72</small></span><button id="collectionButton"><span data-icon="gift"></span><span id="collectionCount">收藏 0/6</span></button></nav>
     <section class="chapter-banner"><div><div class="eyebrow" id="chapterNumber"></div><h2 id="chapterName"></h2><p id="chapterSubtitle"></p></div><div id="chapterArt" aria-hidden="true"></div></section>
     <section class="game" aria-label="小家解謎">
       <div class="level-heading"><div><span id="levelNumber" class="level-number"></span><h3 id="levelName"></h3></div><span id="levelStars" class="tiny-stars" aria-label="本關星星紀錄"></span></div>
@@ -21,13 +42,18 @@
       <div class="goal-summary" id="goalSummary"></div>
     </section>
     <button id="nextTeaser" class="next-teaser"></button>
-    <footer><span id="saveStatus">按住借空間 · 輕點微調 · 進度留在這台裝置</span><span>PLAYABLE PROTOTYPE 0.2</span></footer>
+    </section>
+    <footer><span id="saveStatus">按住借空間 · 輕點微調 · 進度留在這台裝置</span><span>BORROW SPACE · LITTLE COMPANIONS 0.3</span></footer>
+    <nav class="bottom-nav" aria-label="主要導覽"><button id="navHome" aria-current="page"><span data-icon="home"></span>首頁</button><button id="navJourney"><span data-icon="map"></span>去旅行</button><button id="navFriends"><span data-icon="heart"></span>動物手帳</button><button id="navPetHome"><span data-icon="sofa"></span>我的小家</button></nav>
     <noscript>請啟用 JavaScript 以遊玩借空間。</noscript>
   </main>
-  <dialog id="win" aria-labelledby="winTitle"><div class="win-card"><div class="eyebrow">A LITTLE WISH, GRANTED</div><div id="winStars" class="win-stars"></div><h2 id="winTitle">小願望，都實現了！</h2><p id="winText"></p><div id="starChecklist" class="star-checklist"></div><div id="rewardNotice" class="reward-notice" hidden></div><div id="nextPreview" class="next-preview"></div><button id="next" class="primary"></button><button id="retry" class="secondary">再試一次，挑戰三顆星</button><button id="stay" class="text-button">看看我的小家</button></div></dialog>
+  <dialog id="win" aria-labelledby="winTitle"><div class="win-card"><div class="eyebrow">A LITTLE WISH, GRANTED</div><div id="winStars" class="win-stars"></div><h2 id="winTitle">小願望，都實現了！</h2><p id="winText"></p><details class="win-details"><summary>看看本關的星星紀錄</summary><div id="starChecklist" class="star-checklist"></div></details><div id="rewardNotice" class="reward-notice" hidden></div><section id="winFriends" class="choice-section" aria-label="選擇好感動物"></section><div id="nextPreview" class="next-preview"></div><button id="next" class="primary"></button><button id="retry" class="secondary">再試一次，挑戰三顆星</button><button id="stay" class="text-button">看看我的小家</button></div></dialog>
+  <dialog id="friends" aria-labelledby="friendsTitle"><div class="sheet"><div class="sheet-heading"><div><span class="eyebrow">FROM NEIGHBORS TO FAMILY</span><h2 id="friendsTitle">慢慢，成為家人</h2></div><button class="close" data-close aria-label="關閉動物手帳">×</button></div><p>第一次完成每個小家，可選一位當關住戶，好感 +1。集滿 5 次就能領養，好感已滿的朋友會暫停選取；重玩可以挑戰星星，不會重複發放好感。</p><div id="friendCards" class="friend-cards"></div><button id="albumInbox" class="secondary" hidden></button></div></dialog>
+  <dialog id="friendChoice" aria-labelledby="choiceTitle"><div class="sheet"><div class="sheet-heading"><h2 id="choiceTitle">還有一份心意，等你決定</h2><button class="close" data-close aria-label="稍後再選">×</button></div><div id="pendingChoiceContent" class="choice-section"></div><button id="nextPending" class="secondary">下一份心意 →</button></div></dialog>
+  <dialog id="audioSettings" aria-labelledby="audioTitle"><div class="sheet"><div class="sheet-heading"><h2 id="audioTitle">小家的聲音</h2><button class="close" data-close aria-label="關閉聲音設定">×</button></div><p>原創的輕柔音樂盒旋律，陪你慢慢借空間。</p><label class="audio-row">背景音樂<input id="musicToggle" type="checkbox"></label><label class="audio-row">互動音效<input id="effectsToggle" type="checkbox"></label><label class="audio-row" for="volume">音量<span id="volumeLabel">50%</span></label><input id="volume" type="range" min="0" max="100" value="50"><p id="audioStatus" role="status">切到背景時，音樂會自動暫停。</p></div></dialog>
   <dialog id="map" aria-labelledby="mapTitle"><div class="sheet"><div class="sheet-heading"><div><div class="eyebrow">YOUR LITTLE NEIGHBORHOOD</div><h2 id="mapTitle">每扇窗，都有新願望</h2></div><button class="close" data-close aria-label="關閉街區地圖">×</button></div><p>所有關卡都可以直接試玩。星星是額外挑戰，過關就能繼續。</p><div id="mapContent"></div></div></dialog>
-  <dialog id="collection" aria-labelledby="collectionTitle"><div class="sheet"><div class="sheet-heading"><div><div class="eyebrow">GIFTS FROM YOUR NEIGHBORS</div><h2 id="collectionTitle">鄰居送的小心意</h2></div><button class="close" data-close aria-label="關閉收藏">×</button></div><p>每完成一個街區的四個小家，就收到一件紀念小物。</p><div id="collectionContent"></div></div></dialog>
+  <dialog id="collection" aria-labelledby="collectionTitle"><div class="sheet"><div class="sheet-heading"><div><div class="eyebrow">GIFTS FROM YOUR NEIGHBORS</div><h2 id="collectionTitle">鄰居送的小心意</h2></div><button class="close" data-close aria-label="關閉收藏">×</button></div><p>每完成一個街區的四個小家，就收到一件家具。領養第一位寵物後，就能擺進我們的小家。</p><div id="collectionContent"></div></div></dialog>
   <dialog id="discovery" aria-labelledby="discoveryTitle"><div class="discovery-card"><div class="eyebrow">MEET YOUR NEW NEIGHBOR</div><div id="discoveryArt"></div><h2 id="discoveryTitle"></h2><p id="discoveryText"></p><button id="discoveryGo" class="primary">讓我試試 →</button></div></dialog>
-  <dialog id="help" aria-labelledby="helpTitle"><div class="sheet"><div class="sheet-heading"><h2 id="helpTitle">一根手指，照顧一整棟小家</h2><button class="close" data-close aria-label="關閉說明">×</button></div><ol class="help-list"><li><b>按住一間房，向鄰居借空間</b><p>左右借寬度，上下相鄰樓層借高度。放手就停，也可以輕點微調。</p></li><li><b>看住戶的願望</b><p>沙發要寬、植物要高、小貓的窩別太大。房間下方會說明還缺什麼。</p></li><li><b>全部舒服，就能過關</b><p>三顆星：完成小家、在目標次數內完成、不用提示。沒有倒數，沒拿滿星也能繼續。</p></li></ol><p>復原不加次數，會退回上一個狀態；使用提示後，本次重玩不會取得「不用提示」的星。鍵盤用 Tab 選房間，再按住空白鍵或 Enter。</p><button class="primary" data-close>知道了，來借一點空間 →</button></div></dialog>
+  <dialog id="help" aria-labelledby="helpTitle"><div class="sheet"><div class="sheet-heading"><h2 id="helpTitle">一根手指，照顧一整棟小家</h2><button class="close" data-close aria-label="關閉說明">×</button></div><ol class="help-list"><li><b>按住一間房，向鄰居借空間</b><p>左右借寬度，上下相鄰樓層借高度。放手就停，也可以輕點微調。</p></li><li><b>看住戶的願望</b><p>沙發要寬、植物要高、小貓的窩別太大。房間下方會說明還缺什麼。</p></li><li><b>全部舒服，就能過關</b><p>三顆星：完成小家、在目標次數內完成、不用提示。沒有倒數，沒拿滿星也能繼續。</p></li></ol><p>復原不加次數，會退回上一個狀態；使用提示後，本次重玩不會取得「不用提示」的星。鍵盤用 Tab 選房間，再按住空白鍵或 Enter。</p><p>通關選一位住戶增加好感，5 次即可領養。每關只能選一次，也可以稍後從首頁補選。完成街區拿家具，回「我的小家」布置。</p><button class="primary" data-close>知道了，來借一點空間 →</button></div></dialog>
   <script type="module" src="./game.js"></script>
 </body></html>

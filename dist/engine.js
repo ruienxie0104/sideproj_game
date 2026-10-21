@@ -4,7 +4,10 @@ export const RULES = Object.freeze({ minWidth: .20, maxWidth: .80, minHeight: .1
 export const CHAPTERS = [
   { name: '暖陽小巷', subtitle: '從一點善意開始', theme: 'sunny', icon: 'sun', reward: '窗邊的小盆栽', rewardIcon: 'plant' },
   { name: '森林公寓', subtitle: '每個願望，形狀都不同', theme: 'forest', icon: 'leaf', reward: '週末的閱讀沙發', rewardIcon: 'sofa' },
-  { name: '星光屋頂', subtitle: '一起住進剛剛好的夜晚', theme: 'night', icon: 'moon', reward: '晚安的星星抱枕', rewardIcon: 'moon' }
+  { name: '星光屋頂', subtitle: '一起住進剛剛好的夜晚', theme: 'night', icon: 'moon', reward: '晚安的星星抱枕', rewardIcon: 'moon' },
+  { name: '海風花園', subtitle: '把陽光和海風帶回家', theme: 'coast', icon: 'shell', reward: '海風編織地毯', rewardIcon: 'rug' },
+  { name: '奶油小鎮', subtitle: '留一個位子，等你回來', theme: 'bakery', icon: 'tea', reward: '午後點心小桌', rewardIcon: 'tea' },
+  { name: '雲上小屋', subtitle: '我們一起生活的地方', theme: 'cloud', icon: 'cloud', reward: '雲朵午睡床', rewardIcon: 'bed' }
 ];
 
 // Every authored goal has a known feasible layout. New mechanics appear separately,
@@ -21,11 +24,24 @@ export const LEVELS = [
   { id: 'first-nook', name: '小貓只想窩著', chapter: 2, heights: [1], widths: [.70], targetH: [1], targetW: [.39], kinds: ['cozy','space'], counts: [1,3], par: 3, reveal: 'cozy', tip: '小貓喜歡剛剛好的窩。太擠不行，太空也睡不著。' },
   { id: 'night-neighbors', name: '輕輕的晚安', chapter: 2, heights: [.67,.33], widths: [.66,.30], targetH: [.46,.54], targetW: [.44,.58], kinds: ['cozy','space','wide','tall'], counts: [1,2,1,1], par: 11, tip: '把多的空間借出去，讓小貓安心睡，鄰居也舒服。' },
   { id: 'night-garden', name: '月光空中花園', chapter: 2, heights: [.54,.25,.21], widths: [.72,.30,.68], targetH: [.31,.32,.37], targetW: [.46,.56,.48], kinds: ['cozy','space','wide','space','tall','space'], counts: [1,2,1,2,1,2], par: 15, tip: '每一層都牽著下一層。讓月光照進剛剛好的小家。' },
-  { id: 'all-together', name: '今晚，整條街都亮了', chapter: 2, heights: [.24,.25,.51], widths: [.28,.74,.28], targetH: [.36,.34,.30], targetW: [.55,.44,.56], kinds: ['wide','cozy','tall','space','cozy','wide'], counts: [1,1,1,2,1,1], par: 18, tip: '最後一場喬遷派對。把所有願望一起安排好！' }
+  { id: 'all-together', name: '今晚，整條街都亮了', chapter: 2, heights: [.24,.25,.51], widths: [.28,.74,.28], targetH: [.36,.34,.30], targetW: [.55,.44,.56], kinds: ['wide','cozy','tall','space','cozy','wide'], counts: [1,1,1,2,1,1], par: 18, tip: '最後一場喬遷派對。把所有願望一起安排好！' },
+  { id: 'sea-breeze', name: '海風第一扇窗', chapter: 3, heights: [.32,.68], widths: [.72,.32], targetH: [.48,.52], targetW: [.54,.46], kinds: ['wide','space','cozy','space'], counts: [1,2,1,1], par: 9, tip: '小貓想窩著看海，兔兔想伸直腳。先借給需要的鄰居。' },
+  { id: 'shell-shelf', name: '貝殼收藏架', chapter: 3, heights: [.62,.38], widths: [.32,.70], targetH: [.43,.57], targetW: [.46,.56], kinds: ['space','cozy','tall','wide'], counts: [2,1,1,1], par: 11, tip: '先替樓下留出高度，再調整兩邊的寬度。' },
+  { id: 'tidal-balcony', name: '潮汐陽台', chapter: 3, heights: [.22,.48,.30], widths: [.72,.32,.70], targetH: [.34,.35,.31], targetW: [.50,.56,.45], kinds: ['tall','space','wide','cozy','space','space'], counts: [1,2,1,1,2,1], par: 14, tip: '空間像潮水，在相鄰樓層之間流動。' },
+  { id: 'sea-picnic', name: '海邊的野餐約定', chapter: 3, heights: [.40,.20,.40], widths: [.28,.70,.33], targetH: [.32,.36,.32], targetW: [.56,.46,.54], kinds: ['wide','cozy','tall','space','wide','space'], counts: [1,1,1,2,1,2], par: 15, tip: '完成整個街區，編織地毯就能帶回你的家。' },
+  { id: 'morning-bread', name: '麵包出爐了', chapter: 4, heights: [.64,.36], widths: [.68,.30], targetH: [.48,.52], targetW: [.45,.57], kinds: ['cozy','wide','space','tall'], counts: [1,1,2,1], par: 11, tip: '留一個小小角落，等一份溫熱的早餐。' },
+  { id: 'tea-for-four', name: '四位的下午茶', chapter: 4, heights: [.30,.70], widths: [.30,.70], targetH: [.53,.47], targetW: [.57,.44], kinds: ['wide','tall','cozy','space'], counts: [1,1,1,2], par: 12, tip: '樓上要長高，樓下要縮小，剛好可以互相幫忙。' },
+  { id: 'cookie-stairs', name: '餅乾香的樓梯間', chapter: 4, heights: [.48,.30,.22], widths: [.70,.30,.70], targetH: [.30,.34,.36], targetW: [.45,.55,.48], kinds: ['cozy','space','wide','space','tall','cozy'], counts: [1,2,1,2,1,1], par: 15, tip: '先留意最下層的植物，再照顧兩間小貓窩。' },
+  { id: 'bakery-party', name: '小鎮茶會', chapter: 4, heights: [.22,.25,.53], widths: [.30,.72,.30], targetH: [.36,.32,.32], targetW: [.54,.46,.57], kinds: ['wide','cozy','tall','space','cozy','wide'], counts: [1,1,1,2,1,1], par: 17, tip: '茶會準備好了。把每位朋友都安頓舒服吧。' },
+  { id: 'cloud-window', name: '雲停在窗邊', chapter: 5, heights: [.35,.65], widths: [.72,.28], targetH: [.52,.48], targetW: [.46,.56], kinds: ['cozy','tall','wide','space'], counts: [1,1,1,2], par: 12, tip: '窗外很寬，屋裡剛好。讓每個人都有自己的角落。' },
+  { id: 'pillow-fort', name: '抱枕小堡壘', chapter: 5, heights: [.62,.38], widths: [.72,.28], targetH: [.44,.56], targetW: [.44,.58], kinds: ['cozy','wide','tall','cozy'], counts: [1,1,1,1], par: 13, tip: '兩個小窩都要剛剛好。輕點會比長按更容易微調。' },
+  { id: 'sky-bridge', name: '天空的鄰居們', chapter: 5, heights: [.25,.51,.24], widths: [.72,.28,.72], targetH: [.35,.30,.35], targetW: [.46,.56,.45], kinds: ['tall','cozy','wide','space','space','wide'], counts: [1,1,1,2,2,1], par: 16, tip: '中間樓層連接每個願望。慢慢調整，不必趕時間。' },
+  { id: 'welcome-home', name: '歡迎回家', chapter: 5, heights: [.48,.22,.30], widths: [.28,.72,.28], targetH: [.32,.36,.32], targetW: [.56,.44,.56], kinds: ['wide','cozy','tall','space','cozy','wide'], counts: [1,1,1,2,1,1], par: 18, tip: '最後一扇窗亮起來後，回家陪陪等你的朋友。' }
+
 ];
 
 export const KINDS = {
-  space: { label: '想要空間', short: '空間', icon: 'friends', resident: '小糰子', intro: '按住讓房間變大，全部舒服就過關。' },
+  space: { label: '想要空間', short: '空間', icon: 'friends', resident: '小狗', intro: '按住讓房間變大，全部舒服就過關。' },
   wide: { label: '沙發要夠寬', short: '夠寬', icon: 'sofa', resident: '兔兔', intro: '兔兔的長沙發需要寬度。房間很大但太窄，還是放不下。' },
   tall: { label: '植物要夠高', short: '夠高', icon: 'plant', resident: '小熊', intro: '小熊的植物想向上長。按住房間，向相鄰樓層借一點高度。' },
   cozy: { label: '小窩別太大', short: '剛好', icon: 'moon', resident: '小貓', intro: '小貓喜歡有包覆感的小窩。留在舒適範圍，太大也要分給鄰居。' }

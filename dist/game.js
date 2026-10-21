@@ -1,15 +1,19 @@
 import { LEVELS, CHAPTERS, KINDS, createState, cloneState, goalsFor, roomStatus, advance, suggestPlan, awardStars, chapterComplete } from './engine.js';
-import { icon, resident, roomDecor } from './art.js';
-import { STORAGE_KEY, sanitizeProgress, recordWin, totalStars } from './progress.js';
+import { icon, resident, animalArt, roomDecor } from './art.js';
+import { STORAGE_KEY, sanitizeProgress, readProgress, recordWin, totalStars } from './progress.js';
+import { PETS, animalAt, journeyIndex } from './pets.js';
+import { setupJourney } from './journey.js';
+import { createAudio } from './audio.js';
 
 const $ = id => document.getElementById(id);
 let progress;
-try { progress = sanitizeProgress(JSON.parse(localStorage.getItem(STORAGE_KEY))); }
+try { progress = readProgress(localStorage); }
 catch { progress = sanitizeProgress(null); }
-let level = 0, state, goals, history = [], moves = 0, usedHint = false;
+let level = progress.current, state, goals, history = [], moves = 0, usedHint = false;
 let active = null, won = false, lastFrame = 0, winTimer;
-let soundOn = false, audioContext, lastHappy = [], reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let lastHappy = [], reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const dialogFocus = new WeakMap();
+const audio = createAudio(progress.audio, () => { $('audioStatus').textContent = '目前無法播放聲音，可再點開關重試。'; });
 const colors = ['#f4d6ad','#c8dfc0','#bddbd7','#e9c4bd','#d0c8e5','#e9d695'];
 
 for (const el of document.querySelectorAll('[data-icon]')) el.innerHTML = icon(el.dataset.icon);
@@ -21,19 +25,19 @@ function starsHTML(count, cls = '') { return [1,2,3].map(n => `<span class="star
 function clearHint() { document.querySelectorAll('.hinted').forEach(el => el.classList.remove('hinted')); }
 function setMessage(text) { $('message').textContent = text; }
 function openDialog(dialog) {
-  stop(false);
+  clearTimeout(winTimer); stop(false);
   for (const other of document.querySelectorAll('dialog[open]')) if (other !== dialog) other.close();
   dialogFocus.set(dialog, document.activeElement);
   if (!dialog.open) dialog.showModal();
 }
 function updateProgressUI() {
   $('totalStars').textContent = totalStars(progress);
-  $('collectionCount').textContent = `收藏 ${CHAPTERS.filter((_, c) => chapterComplete(progress.best, c)).length}/3`;
+  $('collectionCount').textContent = `收藏 ${CHAPTERS.filter((_, c) => chapterComplete(progress.best, c)).length}/${CHAPTERS.length}`;
   $('levelStars').innerHTML = starsHTML(progress.best[LEVELS[level].id]?.stars || 0);
   $('levelStars').setAttribute('aria-label', `本關已獲得 ${progress.best[LEVELS[level].id]?.stars || 0} 顆星`);
 }
 function start(room, pointerId = null) {
-  if (won || active || document.querySelector('dialog[open]')) return;
+  if ($('gameView').hidden || won || active || document.querySelector('dialog[open]')) return;
   clearHint();
   history.push({ state: cloneState(state), moves });
   if (history.length > 100) history.shift();
@@ -55,6 +59,7 @@ function stop(tap = true) {
   render();
 }
 function load(index) {
+  journey.showGame();
   stop(false); clearTimeout(winTimer);
   for (const dialog of document.querySelectorAll('dialog[open]')) dialog.close();
   level = index;
@@ -131,11 +136,11 @@ function render() {
       const key = `${status.happy}-${compact}`;
       if (holder.dataset.key !== key) {
         holder.dataset.key = key;
-        holder.innerHTML = resident(kind, status.happy) + (kind === 'space' ? `<small>×${entry.counts[room]}</small>` : '');
+        holder.innerHTML = animalArt(animalAt(entry, room), status.happy) + (kind === 'space' ? `<small>×${entry.counts[room]}</small>` : '');
       }
       button.querySelector('.room-reason').textContent = status.reason;
       button.querySelector('.need-track i').style.width = `${status.fill * 100}%`;
-      button.setAttribute('aria-label', `${KINDS[kind].resident}，${KINDS[kind].label}，${status.reason}。按住或輕點借空間。`);
+      button.setAttribute('aria-label', `${PETS[animalAt(entry, room)].name}（${PETS[animalAt(entry, room)].species}），${KINDS[kind].label}，${status.reason}。按住或輕點借空間。`);
       if (lastHappy.length && !lastHappy[room] && status.happy) { newlyHappy++; sparkle(room); }
     }
     top += state.heights[row];
@@ -158,6 +163,7 @@ function finish() {
   const entry = LEVELS[level], wasComplete = chapterComplete(progress.best, entry.chapter);
   const earned = awardStars({ moves, par: entry.par, usedHint });
   recordWin(progress, entry.id, earned, moves); save(); updateProgressUI();
+  journey.renderSummary(); journey.renderChoice($('winFriends'), entry);
   setMessage('每個願望都完成了！這就是剛剛好的小家。');
   playTone([523,659,784]);
   $('winStars').innerHTML = starsHTML(earned);
@@ -233,19 +239,26 @@ $('collectionButton').onclick = showCollection;
 $('helpButton').onclick = () => { clearTimeout(winTimer); openDialog($('help')); };
 $('discoveryGo').onclick = () => { const kind = LEVELS[level].reveal; if (kind && !progress.seen.includes(kind)) { progress.seen.push(kind); save(); } $('discovery').close(); };
 for (const dialog of document.querySelectorAll('dialog')) {
-  dialog.addEventListener('close', () => { const el = dialogFocus.get(dialog); if (el?.isConnected && !document.querySelector('dialog[open]')) el.focus({ preventScroll: true }); });
+  dialog.addEventListener('close', () => {
+    if (document.querySelector('dialog[open]')) return;
+    const el = dialogFocus.get(dialog);
+    const target = el?.isConnected && el.getClientRects().length ? el : document.querySelector('.bottom-nav [aria-current=page]');
+    target?.focus({ preventScroll: true });
+  });
   dialog.querySelectorAll('[data-close]').forEach(button => { button.onclick = () => dialog.close(); });
 }
-$('sound').onclick = () => { soundOn = !soundOn; $('sound').textContent = soundOn ? '♫' : '♪'; $('sound').setAttribute('aria-label', soundOn ? '關閉音效' : '開啟音效'); $('sound').setAttribute('aria-pressed', String(soundOn)); if (soundOn) playTone([523,659]); };
-function playTone(frequencies) {
-  if (!soundOn) return;
-  try {
-    audioContext ??= new (window.AudioContext || window.webkitAudioContext)(); audioContext.resume().catch(() => {});
-    frequencies.forEach((frequency, i) => { const oscillator = audioContext.createOscillator(), gain = audioContext.createGain(), time = audioContext.currentTime + i * .11; oscillator.frequency.value = frequency; gain.gain.setValueAtTime(0,time); gain.gain.linearRampToValueAtTime(.035,time + .02); gain.gain.exponentialRampToValueAtTime(.001,time + .32); oscillator.connect(gain); gain.connect(audioContext.destination); oscillator.start(time); oscillator.stop(time + .34); });
-  } catch { /* Optional sound must never block play. */ }
-}
+function playTone(frequencies) { audio.effect(frequencies); }
 window.addEventListener('pointerup', event => { if (active?.pointerId === event.pointerId) stop(); });
 window.addEventListener('blur', () => stop(false));
 document.addEventListener('visibilitychange', () => { if (document.hidden) stop(false); });
 window.addEventListener('resize', render);
-load(progress.current); requestAnimationFrame(frame);
+const journey = setupJourney({
+  progress, save, openDialog, audio,
+  stopGame: () => { stop(false); clearTimeout(winTimer); },
+  continueIndex: () => state && !won ? level : journeyIndex(progress),
+  continueGame: () => {
+    if (state && !won) { journey.showGame(); document.body.dataset.theme = CHAPTERS[LEVELS[level].chapter].theme; render(); }
+    else load(journeyIndex(progress));
+  }
+});
+updateProgressUI(); requestAnimationFrame(frame);
