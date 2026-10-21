@@ -1,6 +1,6 @@
 {
   "id": "./",
-  "name": "借空間 · 小小好鄰居",
+  "name": "借空間 · 鄰居的小願望",
   "short_name": "借空間",
   "lang": "zh-Hant",
   "start_url": "./",
@@ -8,5 +8,12 @@
   "display": "standalone",
   "background_color": "#f6f3e9",
   "theme_color": "#f6f3e9",
-  "icons": [{ "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
 }

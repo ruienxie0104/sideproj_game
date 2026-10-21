@@ -1,50 +1,33 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f6f3e9">
-  <meta name="description" content="按住小房間，向鄰居借一點空間。讓每一位住戶都有剛剛好的小家。手機單指解謎原型。">
-  <title>借空間 · 小小好鄰居</title>
-  <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./style.css">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#efece1"><meta name="description" content="借一點空間，完成不同住戶的小願望。手機單指解謎：寬沙發、高植物、剛剛好的貓窩。">
+  <title>借空間 · 鄰居的小願望</title><link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css">
 </head>
-<body>
+<body data-theme="sunny">
+  <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
   <main class="app">
-    <header>
-      <a class="brand" href="./" aria-label="借空間首頁">▧ <span>小小好鄰居</span></a>
-      <div class="header-actions">
-        <button id="helpButton" class="icon" aria-label="遊戲說明">?</button>
-        <button id="sound" class="icon" aria-label="開啟音效" aria-pressed="false">♪</button>
-      </div>
-    </header>
-    <section class="intro" aria-label="遊戲介紹">
-      <div class="eyebrow">A LITTLE ROOM FOR EVERYONE</div>
-      <h1>借一點空間，<br>剛剛好的幸福。</h1>
-      <p>按住擁擠的房間，向鄰居借一點位置。</p>
+    <header><div class="brand"><span class="brand-mark">▧</span><div><h1>借空間</h1><span>鄰居的小願望</span></div></div><div class="header-actions"><button id="helpButton" class="icon-button" aria-label="玩法說明">?</button><button id="sound" class="icon-button" aria-label="開啟音效" aria-pressed="false">♪</button></div></header>
+    <nav class="journey" aria-label="遊戲進度"><button id="mapButton"><span data-icon="map"></span><span>街區地圖</span></button><span class="star-total"><span data-icon="star"></span><b id="totalStars">0</b><small>/ 36</small></span><button id="collectionButton"><span data-icon="gift"></span><span id="collectionCount">收藏 0/3</span></button></nav>
+    <section class="chapter-banner"><div><div class="eyebrow" id="chapterNumber"></div><h2 id="chapterName"></h2><p id="chapterSubtitle"></p></div><div id="chapterArt" aria-hidden="true"></div></section>
+    <section class="game" aria-label="小家解謎">
+      <div class="level-heading"><div><span id="levelNumber" class="level-number"></span><h3 id="levelName"></h3></div><span id="levelStars" class="tiny-stars" aria-label="本關星星紀錄"></span></div>
+      <div class="objectives"><span id="happyCount" role="status" aria-live="polite"></span><span id="moveGoal"></span></div>
+      <div class="progress-track"><i id="comfortProgress"></i></div>
+      <div class="house"><div class="roof"><i></i><span id="houseAddress"></span></div><div id="board" role="group" aria-label="按住或輕點房間，向鄰居借空間" aria-describedby="message"></div><div class="foundation"><i></i><i></i><i></i></div></div>
+      <div class="message-wrap"><span class="message-icon" aria-hidden="true">✦</span><p id="message" role="status" aria-live="polite"></p></div>
+      <div class="tools"><button id="undo" disabled><span data-icon="undo"></span><span>復原</span></button><button id="reset"><span data-icon="reset"></span><span>重來</span></button><button id="hint"><span data-icon="hint"></span><span>小提示</span></button></div>
+      <div class="goal-summary" id="goalSummary"></div>
     </section>
-    <section class="game" aria-label="遊戲區域">
-      <button id="levelSelect" class="levelbar"><span id="levelLabel"></span><span class="level-right"><span id="dots" aria-hidden="true"></span><span>⌄</span></span></button>
-      <div class="status"><div><span class="status-dot"></span><b id="happyCount" role="status" aria-live="polite"></b></div><span id="actions"></span></div>
-      <div class="board-wrap"><div class="roof"></div><div id="board" role="group" aria-label="按住或輕點房間，讓它借到空間" aria-describedby="message"></div><div class="foundation"></div></div>
-      <p id="message" role="status" aria-live="polite"></p>
-      <div class="tools">
-        <button id="undo" disabled>↶ <span>復原</span></button>
-        <button id="reset">↻ <span>重來</span></button>
-        <button id="hint">✧ <span>小提示</span></button>
-      </div>
-      <div class="legend"><span><i class="legend-face">⌣</i> 舒服了</span><span><i class="legend-face tight">﹏</i> 還有點擠</span><span>按住借空間 · 輕點微調</span></div>
-      <div class="best" id="best"></div>
-    </section>
-    <footer><span>慢慢來，每個人都有位置。</span><span id="saveStatus">進度只儲存在這台裝置。</span><span class="prototype">BORROW SPACE · PLAYABLE PROTOTYPE 0.1</span></footer>
+    <button id="nextTeaser" class="next-teaser"></button>
+    <footer><span id="saveStatus">按住借空間 · 輕點微調 · 進度留在這台裝置</span><span>PLAYABLE PROTOTYPE 0.2</span></footer>
     <noscript>請啟用 JavaScript 以遊玩借空間。</noscript>
   </main>
-  <dialog id="win" aria-labelledby="winTitle" aria-describedby="winText">
-    <div class="win-card"><div class="win-art" aria-hidden="true">✦</div><div class="eyebrow">EVERYONE FEELS AT HOME</div><h2 id="winTitle">大家都住得剛剛好。</h2><p id="winText"></p><div id="winBest" class="win-best"></div><button id="next" class="primary">下一個小家 →</button><button id="stay" class="secondary">再看看我的小家</button></div>
-  </dialog>
-  <dialog id="levels" aria-labelledby="levelsTitle"><div class="sheet"><div class="sheet-heading"><div><div class="eyebrow">EIGHT LITTLE HOMES</div><h2 id="levelsTitle">今天，拜訪哪個小家？</h2></div><button class="icon" data-close aria-label="關閉關卡選單">×</button></div><p>每個小家都能直接試玩，沒有倒數。</p><div id="levelGrid"></div></div></dialog>
-  <dialog id="help" aria-labelledby="helpTitle"><div class="sheet"><div class="sheet-heading"><h2 id="helpTitle">讓每個小家都舒服。</h2><button class="icon" data-close aria-label="關閉遊戲說明">×</button></div><div class="help-demo" aria-hidden="true"><span>小家</span><b>→</b><span class="grow">按住，長大</span></div><ol class="help-list"><li><b>按住一間房</b><br>向同層鄰居借寬度，也向相鄰樓層借高度。</li><li><b>看表情，放手就停</b><br>空間足夠就會微笑。借太多時，換鄰居借回來。</li><li><b>讓所有小家都舒服</b><br>可以輕點微調、復原，或看小提示。</li></ol><p>電腦可用 Tab 選房間，再按住空白鍵或 Enter。手機可直接單指長按；操作不需要聲音或辨認顏色。</p><button class="primary" data-close>知道了，來借一點空間 →</button></div></dialog>
+  <dialog id="win" aria-labelledby="winTitle"><div class="win-card"><div class="eyebrow">A LITTLE WISH, GRANTED</div><div id="winStars" class="win-stars"></div><h2 id="winTitle">小願望，都實現了！</h2><p id="winText"></p><div id="starChecklist" class="star-checklist"></div><div id="rewardNotice" class="reward-notice" hidden></div><div id="nextPreview" class="next-preview"></div><button id="next" class="primary"></button><button id="retry" class="secondary">再試一次，挑戰三顆星</button><button id="stay" class="text-button">看看我的小家</button></div></dialog>
+  <dialog id="map" aria-labelledby="mapTitle"><div class="sheet"><div class="sheet-heading"><div><div class="eyebrow">YOUR LITTLE NEIGHBORHOOD</div><h2 id="mapTitle">每扇窗，都有新願望</h2></div><button class="close" data-close aria-label="關閉街區地圖">×</button></div><p>所有關卡都可以直接試玩。星星是額外挑戰，過關就能繼續。</p><div id="mapContent"></div></div></dialog>
+  <dialog id="collection" aria-labelledby="collectionTitle"><div class="sheet"><div class="sheet-heading"><div><div class="eyebrow">GIFTS FROM YOUR NEIGHBORS</div><h2 id="collectionTitle">鄰居送的小心意</h2></div><button class="close" data-close aria-label="關閉收藏">×</button></div><p>每完成一個街區的四個小家，就收到一件紀念小物。</p><div id="collectionContent"></div></div></dialog>
+  <dialog id="discovery" aria-labelledby="discoveryTitle"><div class="discovery-card"><div class="eyebrow">MEET YOUR NEW NEIGHBOR</div><div id="discoveryArt"></div><h2 id="discoveryTitle"></h2><p id="discoveryText"></p><button id="discoveryGo" class="primary">讓我試試 →</button></div></dialog>
+  <dialog id="help" aria-labelledby="helpTitle"><div class="sheet"><div class="sheet-heading"><h2 id="helpTitle">一根手指，照顧一整棟小家</h2><button class="close" data-close aria-label="關閉說明">×</button></div><ol class="help-list"><li><b>按住一間房，向鄰居借空間</b><p>左右借寬度，上下相鄰樓層借高度。放手就停，也可以輕點微調。</p></li><li><b>看住戶的願望</b><p>沙發要寬、植物要高、小貓的窩別太大。房間下方會說明還缺什麼。</p></li><li><b>全部舒服，就能過關</b><p>三顆星：完成小家、在目標次數內完成、不用提示。沒有倒數，沒拿滿星也能繼續。</p></li></ol><p>復原不加次數，會退回上一個狀態；使用提示後，本次重玩不會取得「不用提示」的星。鍵盤用 Tab 選房間，再按住空白鍵或 Enter。</p><button class="primary" data-close>知道了，來借一點空間 →</button></div></dialog>
   <script type="module" src="./game.js"></script>
-</body>
-</html>
+</body></html>

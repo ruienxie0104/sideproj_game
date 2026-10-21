@@ -1,0 +1,162 @@
+{
+  "hello-v2": [
+    {
+      "room": 0,
+      "duration": 1.16
+    }
+  ],
+  "share-v2": [
+    {
+      "room": 1,
+      "duration": 1.38
+    }
+  ],
+  "upstairs-v2": [
+    {
+      "room": 2,
+      "duration": 0.8
+    },
+    {
+      "room": 1,
+      "duration": 1.8
+    },
+    {
+      "room": 0,
+      "duration": 0.46
+    }
+  ],
+  "first-sofa": [
+    {
+      "room": 0,
+      "duration": 1.8
+    },
+    {
+      "room": 3,
+      "duration": 0.78
+    }
+  ],
+  "first-tree": [
+    {
+      "room": 1,
+      "duration": 2.5
+    },
+    {
+      "room": 0,
+      "duration": 1.18
+    }
+  ],
+  "sofa-tree": [
+    {
+      "room": 0,
+      "duration": 1.8
+    },
+    {
+      "room": 3,
+      "duration": 2.5
+    },
+    {
+      "room": 2,
+      "duration": 0.36
+    }
+  ],
+  "forest-bridge": [
+    {
+      "room": 1,
+      "duration": 1.8
+    },
+    {
+      "room": 5,
+      "duration": 1.8
+    },
+    {
+      "room": 2,
+      "duration": 1.8
+    },
+    {
+      "room": 0,
+      "duration": 0.3
+    }
+  ],
+  "forest-party": [
+    {
+      "room": 4,
+      "duration": 1.8
+    },
+    {
+      "room": 0,
+      "duration": 1.2
+    },
+    {
+      "room": 3,
+      "duration": 1.8
+    },
+    {
+      "room": 2,
+      "duration": 0.22
+    }
+  ],
+  "first-nook": [
+    {
+      "room": 1,
+      "duration": 1.42
+    }
+  ],
+  "night-neighbors": [
+    {
+      "room": 1,
+      "duration": 1.2
+    },
+    {
+      "room": 2,
+      "duration": 1.8
+    },
+    {
+      "room": 3,
+      "duration": 0.3
+    }
+  ],
+  "night-garden": [
+    {
+      "room": 1,
+      "duration": 1.8
+    },
+    {
+      "room": 2,
+      "duration": 2.5
+    },
+    {
+      "room": 5,
+      "duration": 1.8
+    },
+    {
+      "room": 3,
+      "duration": 1.2
+    },
+    {
+      "room": 4,
+      "duration": 0.44
+    }
+  ],
+  "all-together": [
+    {
+      "room": 3,
+      "duration": 2.5
+    },
+    {
+      "room": 0,
+      "duration": 1.2
+    },
+    {
+      "room": 4,
+      "duration": 0.8
+    },
+    {
+      "room": 2,
+      "duration": 0.8
+    },
+    {
+      "room": 0,
+      "duration": 0.3
+    }
+  ]
+}
