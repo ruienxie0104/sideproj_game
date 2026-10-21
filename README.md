@@ -16,7 +16,19 @@ npm run dev
 
 開啟 [http://localhost:4173](http://localhost:4173)。首頁提供繼續旅程、動物手帳與我們的小家。原創背景音樂由首頁的音樂按鈕或右上角 `♪` 開啟。
 
-前端原始碼就在 `dist/`，可由一般靜態伺服器提供。需透過 HTTP/HTTPS；直接雙擊 HTML 的 `file://` 模式不支援 JavaScript modules。本次僅保留本機與 GitHub，沒有額外 Sites 發布。
+前端原始碼就在 `dist/`，可由一般靜態伺服器提供。需透過 HTTP/HTTPS；直接雙擊 HTML 的 `file://` 模式不支援 JavaScript modules。公開試玩站使用 GitHub Pages，沒有額外 Sites 發布。
+
+### 公開試玩網址與部署
+
+[直接遊玩借空間](https://ruienxie0104.github.io/sideproj_game/)。可把這個網址分享給朋友，手機與電腦都能開啟。
+
+`.github/workflows/pages.yml` 在 `main` 推送或手動執行時，先跑 `npm run check`，通過後把 `dist/` 發布到 GitHub Pages。部署結果可從 [GitHub Actions](https://github.com/ruienxie0104/sideproj_game/actions/workflows/pages.yml) 查看。Pages 發布來源設定為 GitHub Actions。
+
+遊玩紀錄使用 `localStorage`，保留在每位玩家自己的瀏覽器，關閉分頁後仍可保留；遊戲沒有將玩家存檔上傳 GitHub。清除網站資料、使用無痕模式、換瀏覽器或換裝置時，紀錄可能消失或無法沿用。朋友不會互相看到存檔，專案擁有者也沒有玩家存檔後台。
+
+本機 `localhost` 與 GitHub Pages 是不同網址來源，紀錄不會自動搬過去；線上首次遊玩會建立獨立紀錄。更新遊戲會沿用相同存檔鍵與遷移邏輯。瀏覽器可能清理網站儲存空間，目前不把本機存檔視為雲端備份。
+
+未來 App 路線可以保留現有遊戲核心，先加入可安裝與離線能力，再評估封裝 iOS／Android；跨裝置同步則另外加入帳號及雲端存檔。這些目前尚未實作。
 
 ### 手機試玩
 
